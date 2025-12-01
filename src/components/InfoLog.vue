@@ -3,6 +3,7 @@
     <div style="display:flex;align-items:baseline;gap:.55rem">
       <h1 class="status">{{ backendStatus }}</h1>
       <h3>V{{ version }}</h3>
+      <h3 class="sign">BUNKER EDITION</h3>
     </div>
 
     <!-- controls: desktop vs mobile -->
@@ -57,5 +58,27 @@ export default {
 .note {
   margin-top: 0.5rem;
   font-style: italic;
+}
+
+.sign {
+	font-size: 1.25rem;
+	animation: mcEdition 1.6s linear infinite;
+}
+
+@keyframes mcEdition {
+  0% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 5px #fff388);
+  }
+
+  50% {
+    transform: scale(1.03) rotate(1deg);
+    filter: drop-shadow(0 0 6px #fff388);
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 5px #fff388);
+  }
 }
 </style>

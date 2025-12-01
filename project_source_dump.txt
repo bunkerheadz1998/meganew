@@ -230,6 +230,7 @@ defineExpose({ toggle });
     <div style="display:flex;align-items:baseline;gap:.55rem">
       <h1 class="status">{{ backendStatus }}</h1>
       <h3>V{{ version }}</h3>
+			<h3>BUNKER EDITION</h3>
     </div>
 
     <!-- controls: desktop vs mobile -->
