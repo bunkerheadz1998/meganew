@@ -1,11 +1,23 @@
 <template>
   <div>
-    <ThreeJSScene ref="threeScene" :blur="menuOpen" />
+    <ThreeJSScene
+			ref="threeScene"
+			:blur="menuOpen"
+			@boundary-check="onBoundaryCheck"
+			/>
     <div v-if="isMobile" class="joystick-wrapper">
       <JoystickWrapper @joystick-start="onJoyStart" @joystick-move="onJoyMove" @joystick-end="onJoyEnd" />
     </div>
-    <HudOverlay ref="hud" :is-mobile="isMobile" @upload="handleUpload" @menu-open="onMenuOpen" @menu-close="onMenuClose"
-      @upload-done="onUploadDone" />
+    <HudOverlay
+			ref="hud"
+			:is-mobile="isMobile"
+			:show-soundsystem="showSoundsystem"
+			:soundsystem-index="soundsystemIndex"
+			@upload="handleUpload"
+			@menu-open="onMenuOpen"
+			@menu-close="onMenuClose"
+			@upload-done="onUploadDone"
+			/>
   </div>
 </template>
 
@@ -24,6 +36,8 @@ export default {
     return {
       isMobile: /Mobi|Android/i.test(navigator.userAgent),
       menuOpen: false,
+			showSoundsystem: false,
+			soundsystemIndex: null,
     };
   },
   mounted() {
@@ -121,6 +135,19 @@ export default {
     onJoyEnd(payload) {
       this.$refs.threeScene?.joystickEnd(payload);
     },
+		onBoundaryCheck(data) {
+			const {
+				isInsideSoundsystem,
+				index
+			} = data;
+
+			console.log('********************');
+			console.log(data);
+			console.log('********************');
+
+			this.soundsystemIndex = index;
+			this.showSoundsystem = isInsideSoundsystem;
+		},
   },
 };
 </script>
