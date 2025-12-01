@@ -121,7 +121,7 @@ export function loadVideo(scene, url, position = new THREE.Vector3(), rotation =
 export async function loadAudio(scene, listener, url, soundsystemID) {
 	const soundsystem = scene.getObjectByName(soundsystemID);
 	const speaker = new THREE.PositionalAudio(listener);
-	speaker.setRefDistance(1.0);
+	speaker.setRefDistance(0.5);
 
 	const cdj = new Audio();
   cdj.src = url;

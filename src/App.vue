@@ -77,7 +77,7 @@ export default {
 
 				console.log('********************')
 				console.log(url)
-				console.log(this.soundsystemIndex)
+				console.log(this.soundsystemIndex + 1)
 				console.log('********************')
 
 				const body = JSON.stringify({ url });
@@ -86,7 +86,7 @@ export default {
 					"Content-Type": "application/json"
 				}
 
-				const response = await fetch(`${apiUrl}/add/${this.soundsystemIndex}`, {
+				const response = await fetch(`${apiUrl}/add/${this.soundsystemIndex + 1}`, {
 					method: 'POST',
 					headers,
 					body 
