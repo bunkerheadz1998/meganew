@@ -10,6 +10,7 @@ import { TDSLoader } from 'three/examples/jsm/loaders/TDSLoader.js'
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js'
 import { VRMLLoader } from 'three/examples/jsm/loaders/VRMLLoader.js'
 
+
 /** Image → Plane */
 export function loadImage(
     scene,
@@ -121,6 +122,36 @@ export function loadVideo(scene, url, position = new THREE.Vector3(), rotation =
     mesh.userData.src = url;
     mesh.userData.videoState = 'playing'; // 'playing' | 'paused' | 'unloaded'
     if (saveCb) saveCb(mesh);
+}
+
+export async function loadAudio(scene, listener, url, soundsystemID) {
+	const soundsystem = scene.getObjectByName(soundsystemID);
+	const speaker = new THREE.PositionalAudio(listener);
+	speaker.setRefDistance(0.5);
+
+	const cdj = new Audio();
+  cdj.src = url;
+  cdj.crossOrigin = 'anonymous';
+  cdj.autoplay = true;
+  cdj.loop = true;
+  cdj.preload = 'auto';
+
+	speaker.setMediaElementSource(cdj);
+	soundsystem.add(speaker);
+
+	const cue = () => {
+		if (listener.context.state === 'suspended') {
+			listener.context.resume().then(() => {
+				cdj.play().catch(console.warn);
+			});
+		} else {
+			cdj.play().catch(() => {
+				window.addEventListener('click', () => cdj.play());
+			});
+		}
+	}
+
+	cdj.addEventListener('canplaythrough', cue);
 }
 
 /** Model → Scene (auto-scaled, positioned) */

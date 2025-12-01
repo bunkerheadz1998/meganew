@@ -1,6 +1,6 @@
 // src/services/sceneActions.js
 import * as THREE from 'three'
-import { loadImage, loadGIF, loadVideo, loadModel } from '@/services/threeLoaders'
+import { loadImage, loadGIF, loadVideo, loadAudio, loadModel } from '@/services/threeLoaders'
 import { saveObject } from '@/services/objectService'
 
 /**
@@ -36,7 +36,7 @@ export function createSceneActions(scene, camera, room = 'default') {
             // ➡️ attach LOD info to this mesh
             mesh.userData.textureUrls = urls;
             mesh.userData.currentTextureSize = 'large';
-            console.log(`Image ${mesh.uuid}: initial LOD → LARGE`);
+            //console.log(`Image ${mesh.uuid}: initial LOD → LARGE`);
 
             // 4️⃣ persist to your backend
             saveObject({
@@ -69,6 +69,20 @@ export function createSceneActions(scene, camera, room = 'default') {
         })
     }
 
+    async function addAudio(result) {
+        const vurl = `${process.env.VUE_APP_API_URL}${result.filePath}`;
+        const loader = loadAudio;
+
+        loader(scene, vurl, soundsystemID => {
+            saveObject({
+                type: 'audio',
+                filePath: result.filePath,
+								soundsystem: soundsystemID,
+                room
+            }).catch(console.error)
+        })
+    }
+
     function addModel(result, extension) {
         const url = `${process.env.VUE_APP_API_URL}${result.filePath}`
         const pos = _getPlacement()
@@ -87,5 +101,5 @@ export function createSceneActions(scene, camera, room = 'default') {
         })
     }
 
-    return { addImage, addGIF, addModel }
+    return { addImage, addGIF, addAudio, addModel }
 }

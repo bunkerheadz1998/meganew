@@ -1,11 +1,24 @@
 <template>
   <div>
-    <ThreeJSScene ref="threeScene" :blur="menuOpen" />
+    <ThreeJSScene
+			ref="threeScene"
+			:blur="menuOpen"
+			@boundary-check="onBoundaryCheck"
+			/>
     <div v-if="isMobile" class="joystick-wrapper">
       <JoystickWrapper @joystick-start="onJoyStart" @joystick-move="onJoyMove" @joystick-end="onJoyEnd" />
     </div>
-    <HudOverlay ref="hud" :is-mobile="isMobile" @upload="handleUpload" @menu-open="onMenuOpen" @menu-close="onMenuClose"
-      @upload-done="onUploadDone" />
+    <HudOverlay
+			ref="hud"
+			:is-mobile="isMobile"
+			:show-soundsystem="showSoundsystem"
+			:soundsystem-index="soundsystemIndex"
+			@upload="handleUpload"
+			@soundsystemUpload="handleSoundsystemUpload"
+			@menu-open="onMenuOpen"
+			@menu-close="onMenuClose"
+			@upload-done="onUploadDone"
+			/>
   </div>
 </template>
 
@@ -24,6 +37,8 @@ export default {
     return {
       isMobile: /Mobi|Android/i.test(navigator.userAgent),
       menuOpen: false,
+			showSoundsystem: false,
+			soundsystemIndex: null,
     };
   },
   mounted() {
@@ -56,6 +71,34 @@ export default {
       this.joystickX = 0;
       this.joystickY = 0;
     },
+    async handleSoundsystemUpload(url) {
+			try {
+				const apiUrl = process.env.VUE_APP_SOUNDSYSTEM_SERVICE_URL;
+
+				console.log('********************')
+				console.log(url)
+				console.log(this.soundsystemIndex + 1)
+				console.log('********************')
+
+				const body = JSON.stringify({ url });
+
+				const headers = {
+					"Content-Type": "application/json"
+				}
+
+				const response = await fetch(`${apiUrl}/add/${this.soundsystemIndex + 1}`, {
+					method: 'POST',
+					headers,
+					body 
+				});
+
+				if (!response.ok) {
+          throw new Error('Failed to add track to playlist');
+        }
+			} catch (err) {
+				console.error(err);
+			}
+		},
     async handleUpload(file) {
       const formData = new FormData();
       formData.append("file", file);
@@ -84,10 +127,6 @@ export default {
             break;
           case "gif":
             this.$refs.threeScene.addGIF(result);
-            break;
-          case "mp3":
-          case "wav":
-            this.$refs.threeScene.addAudio(result);
             break;
           case "gltf":
           case "glb":
@@ -121,6 +160,19 @@ export default {
     onJoyEnd(payload) {
       this.$refs.threeScene?.joystickEnd(payload);
     },
+		onBoundaryCheck(data) {
+			const {
+				isInsideSoundsystem,
+				index
+			} = data;
+
+			console.log('********************');
+			console.log(data);
+			console.log('********************');
+
+			this.soundsystemIndex = index;
+			this.showSoundsystem = isInsideSoundsystem;
+		},
   },
 };
 </script>
