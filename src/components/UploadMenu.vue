@@ -8,34 +8,27 @@
 			</template>
 
 			<template v-if="contentType == 'audio'">
-				<input type="file" accept="audio/wav,audio/mp3" @change="onChoose" />
-				<p class="hint">Max 12 MB • wav / mp3</p>
+				<input type="text" @input="onInput" />&nbsp;
+				<p class="hint">Max 1hr • Bandcamp / Soundcloud</p>
 			</template>
 		</template>
 
 		<!-- STEP 2 – preview + actions -->
 		<template v-else>
-			<h3>Preview</h3>
+			<h3 v-if="contentType == 'image'">Preview</h3>
+
+			<span v-if="contentType == 'audio'">Downloading...</span>
 
 			<img v-if="contentType == 'image'" :src="previewUrl" class="preview" :alt="file.name" />
 
-			<audio
-					v-if="contentType == 'audio'"
-					:src="previewUrl"
-					class="preview"
-					:alt="file.name"
-					controls="true"
-					>
-			</audio>
-
-			<p>
+			<p v-if="contentType == 'image'">
 				{{ file.name }} &nbsp;•&nbsp;
 				{{ (file.size / 1024 / 1024).toFixed(2) }} MB
 			</p>
 
 			<p v-if="error" class="error">{{ error }}</p>
 
-			<div class="actions">
+			<div v-if="contentType == 'image'" class="actions">
 				<button @click="reset">Choose other</button>
 				<button :disabled="!!error" @click="upload">Upload</button>
 			</div>
@@ -45,7 +38,7 @@
 
 <script>
 	export default {
-		emits: ["upload"],
+		emits: ["upload", "soundsystemUpload"],
 		props: {
 			contentType: String,
 		},
@@ -65,6 +58,13 @@
 		//  },
 		//},
 		methods: {
+			onInput(e) {
+				const url = e.target.value;
+
+				this.file = true;
+
+				this.$emit("soundsystemUpload", url);
+			},
 			onChoose(e) {
 				const f = e.target.files[0];
 				if (!f) return;

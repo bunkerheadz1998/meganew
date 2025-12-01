@@ -29,7 +29,7 @@
 			);
 
 			// Use your existing sceneActions to handle persistence
-			const { addImage, addGIF, addAudio, addModel } = createSceneActions(scene, camera, ROOM);
+			const { addImage, addGIF, addModel } = createSceneActions(scene, camera, ROOM);
 
 			// We'll keep track of every image plane you add for dynamic LOD swaps:
 			const imagePlanes = [];
@@ -166,7 +166,7 @@
 				loadAudio(
 					scene,
 					listener,
-						`https://player.bubble.supply/megaworld_${id}`,
+						`https://player.bubble.supply/megaworld${id}_all`,
 					id
 				);
 
@@ -216,7 +216,6 @@
 				joystickEnd,
 				addImage: addImageWithLOD,
 				addGIF,
-				addAudio,
 				addModel,
 			};
 		},

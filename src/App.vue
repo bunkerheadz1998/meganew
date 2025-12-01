@@ -14,6 +14,7 @@
 			:show-soundsystem="showSoundsystem"
 			:soundsystem-index="soundsystemIndex"
 			@upload="handleUpload"
+			@soundsystemUpload="handleSoundsystemUpload"
 			@menu-open="onMenuOpen"
 			@menu-close="onMenuClose"
 			@upload-done="onUploadDone"
@@ -70,6 +71,34 @@ export default {
       this.joystickX = 0;
       this.joystickY = 0;
     },
+    async handleSoundsystemUpload(url) {
+			try {
+				const apiUrl = process.env.VUE_APP_SOUNDSYSTEM_SERVICE_URL;
+
+				console.log('********************')
+				console.log(url)
+				console.log(this.soundsystemIndex)
+				console.log('********************')
+
+				const body = JSON.stringify({ url });
+
+				const headers = {
+					"Content-Type": "application/json"
+				}
+
+				const response = await fetch(`${apiUrl}/add/${this.soundsystemIndex}`, {
+					method: 'POST',
+					headers,
+					body 
+				});
+
+				if (!response.ok) {
+          throw new Error('Failed to add track to playlist');
+        }
+			} catch (err) {
+				console.error(err);
+			}
+		},
     async handleUpload(file) {
       const formData = new FormData();
       formData.append("file", file);
@@ -98,10 +127,6 @@ export default {
             break;
           case "gif":
             this.$refs.threeScene.addGIF(result);
-            break;
-          case "mp3":
-          case "wav":
-            this.$refs.threeScene.addAudio(result);
             break;
           case "gltf":
           case "glb":

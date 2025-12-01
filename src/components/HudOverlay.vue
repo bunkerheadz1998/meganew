@@ -18,7 +18,7 @@
   </div>
 
   <div v-if="showMenu" class="upload-backdrop pointer-events-auto" @click.self="toggle">
-    <UploadMenu @upload="handleUpload" :content-type="contentType" />
+    <UploadMenu @upload="handleUpload" @soundsystemUpload="handleSoundsystemUpload" :content-type="contentType" />
   </div>
 </template>
 
@@ -36,7 +36,7 @@ const props = defineProps({
 
 let contentType = undefined;
 
-const emit = defineEmits(["upload", "menu-open", "menu-close"]);
+const emit = defineEmits(["upload", "soundsydtemUpload", "menu-open", "menu-close"]);
 
 const showMenu = ref(false);
 
@@ -44,6 +44,12 @@ function toggle(type) {
 	contentType = type;
   showMenu.value = !showMenu.value;
   showMenu.value ? emit("menu-open") : emit("menu-close");
+}
+
+function handleSoundsystemUpload(url) {
+  emit("soundsystemUpload", url); // bubble to App.vue
+  showMenu.value = false;
+  emit("upload-done");
 }
 
 function handleUpload(file) {
