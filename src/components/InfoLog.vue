@@ -29,7 +29,7 @@ export default {
     return {
       backendStatus: "Checking…",
       isMobile: "ontouchstart" in window || navigator.maxTouchPoints > 0,
-      version: "1.3"
+      version: "1.483"
     };
   },
   mounted() {

@@ -103,6 +103,9 @@ export function loadVideo(scene, url, position = new THREE.Vector3(), rotation =
     v.loop = true; v.muted = true; v.playsInline = true; v.autoplay = true; v.preload = 'metadata';
     const tex = new THREE.VideoTexture(v);
     tex.colorSpace = THREE.SRGBColorSpace;
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
 
     const mesh = new THREE.Mesh(
         new THREE.PlaneGeometry(2, 2 / (16 / 9)),
@@ -115,6 +118,9 @@ export function loadVideo(scene, url, position = new THREE.Vector3(), rotation =
     mesh.position.copy(position); mesh.rotation.copy(rotation);
     scene.add(mesh);
     v.play().catch(() => { window.addEventListener('click', () => v.play(), { once: true }); });
+    mesh.userData.video = v;
+    mesh.userData.src = url;
+    mesh.userData.videoState = 'playing'; // 'playing' | 'paused' | 'unloaded'
     if (saveCb) saveCb(mesh);
 }
 
