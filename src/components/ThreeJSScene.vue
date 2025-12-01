@@ -69,10 +69,10 @@
 
 				// Construct soundsystems
 				const soundsystems = [
-					constructSoundsytem(40, 0, 40, '0'),
-					constructSoundsytem(listener, 40, 0, -40, '1'),
-					constructSoundsytem(listener, -40, 0, -40, '2'),
-					constructSoundsytem(listener, -40, 0, 40, '3'),
+					constructSoundsytem(listener, 40, 0, 40, '1'),
+					constructSoundsytem(listener, 40, 0, -40, '2'),
+					constructSoundsytem(listener, -40, 0, -40, '3'),
+					constructSoundsytem(listener, -40, 0, 40, '4'),
 				];
 
 				// Set up soundsystem boundaries for detection
